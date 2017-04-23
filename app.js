@@ -2,8 +2,7 @@ const Discord   = require('discord.js');
 const client    = new Discord.Client();
 const settings  = require('./settings.json').general;
 const request   = require('request');
-
-const roles     = require('./roles.js');
+const nozum     = require('./nozum.js');
 
 client.on('ready', () => {
   // When the bot is ready.
@@ -50,12 +49,46 @@ client.on('message', message => {
         //message.reply(message.author.id);
         break;
       case 'update':
+        var webUser = nozum.updateUser(command, client, message);
+        break;
+      case 'myId':
+        message.member.sendMessage("Your ID is: " + message.member.id + ". Go to http://nozum.wdnsbn.com/ and change your Discord ID from your user CP.");
+        break;
+      case 'nick':
         var guild = client.guilds.array()[0];
-        var role = guild.roles.get("305658909274800130");
-
-        var memb = guild.member(message.author);
-
-        memb.addRole(role);
+        var member = guild.member(message.author);
+        member.setNickname("Someone");
+        break;
+      case 'test':
+        message.channel.sendMessage("", {embed: {
+          color: 3447003,
+          author: {
+            name: message.author.username,
+            icon_url: message.author.avatarURL
+          },
+          title: 'This is an embed',
+          url: 'http://google.com',
+          description: 'This is a test embed to showcase what they look like and what they can do. So if I were to add a lot of text, what would happen then?',
+          fields: [
+            {
+              name: 'Fields',
+              value: 'They can have different fields with small headlines.'
+            },
+            {
+              name: 'Masked links',
+              value: 'You can put [masked links](http://google.com) inside of rich embeds.'
+            },
+            {
+              name: 'Markdown',
+              value: 'You can put all the *usual* **__Markdown__** inside of them.'
+            }
+          ],
+          timestamp: new Date(),
+          footer: {
+            icon_url: message.author.avatarURL,
+            text: '© Example'
+          }
+        }});
         break;
     }
   }
