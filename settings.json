@@ -5,7 +5,7 @@
     "prefix": "#"
   },
   "database": {
-    "dbhost": "",
+    "dbhost": "test",
     "dbuser": "",
     "dbpass": "",
     "dbname": "",
