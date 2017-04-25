@@ -2,7 +2,7 @@ const mysql     = require('mysql');
 const database  = require('./settings.json').database;
 
 module.exports = {
-    updateUser: function(command, client, message) {
+    updateUser: function(user) {
       var connection = mysql.createConnection({
         host      : database.host,
         user      : database.user,
@@ -12,7 +12,7 @@ module.exports = {
 
       connection.connect();
 
-      connection.query("SELECT `U`.`username`, `G`.`discordId` FROM `" + database.pref + "users` `U` INNER JOIN `" + database.pref + "groups` `G` ON `G`.`id` = `U`.`group` WHERE `U`.`discordId` = '" + message.author.id + "'", function(error, results, fields) {
+      connection.query("SELECT `U`.`username`, `G`.`discordId` FROM `" + database.pref + "users` `U` INNER JOIN `" + database.pref + "groups` `G` ON `G`.`id` = `U`.`group` WHERE `U`.`discordId` = '" + user.id + "'", function(error, results, fields) {
         if(error) {
           console.log(error); return;
         }
@@ -21,18 +21,29 @@ module.exports = {
           return message.reply("Sorry, no user were found.");
         }
 
-        var guild = client.guilds.array()[0];
-        var user = guild.member(message.author);
+        var member = guild.member(user);
 
-        if(user.owner) { return console.log("Can't manage owner account"); }
+        if(member.owner) { return console.log("Can't manage owner account"); }
 
         var role = guild.roles.get(results[0].discordId);
-        user.setNickname(results[0].username);
-        user.addRole(role);
+        member.setNickname(results[0].username);
+        member.addRole(role);
 
         message.reply("I successfully updated you.");
       });
 
       connection.end();
+    },
+
+    syncUsers: function(client) {
+      var guild = client.guilds.first();
+      var members = guild.members.array();
+
+      for(var i = 0; i < members.length; i++) {
+        //members[i].sendMessage("Hello there! I'm a bot, I'm going to be fucking annoying!");
+        console.log("Updating: " + (members[i].nickname ? members[i].nickname : members[i].user.username));
+        this.updateUser(members[i].user);
+      }
+      console.log("=============================");
     }
 }

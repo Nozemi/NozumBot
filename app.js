@@ -7,6 +7,14 @@ const nozum     = require('./nozum.js');
 client.on('ready', () => {
   // When the bot is ready.
   console.log(getDateTime() + ': Bot is ready.');
+
+  if(updateInterval !== null) {
+    clearInterval(updateInterval);
+  }
+
+  var updateInterval = setInterval(function() {
+    nozum.syncUsers(client);
+  }, 60000);
 });
 
 client.on('reconnecting', () => {
@@ -19,8 +27,18 @@ client.on('disconnect', () => {
   console.log(getDateTime() + ': Bot disconnected.');
 });
 
+client.on('typingStart', function(channel, user) {
+  var guild = channel.guild;
+  var member = guild.member(user);
+
+  channel.sendMessage("Ey! " + user.toString() + ", no typing!");
+});
+
 var prefix = settings.prefix;
 client.on('message', message => {
+  if(message.author.bot) return;
+  message.delete();
+  message.reply("I said no typing. Don't be annoying!");
   // Checks if the message sender is the bot itself. If it is, we don't want it to
   // respond to it's own messages.
   //if(message.author.bot) return;
@@ -49,7 +67,7 @@ client.on('message', message => {
         //message.reply(message.author.id);
         break;
       case 'update':
-        var webUser = nozum.updateUser(command, client, message);
+        var webUser = nozum.updateUser(message.author);
         break;
       case 'myId':
         message.member.sendMessage("Your ID is: " + message.member.id + ". Go to http://nozum.wdnsbn.com/ and change your Discord ID from your user CP.");
