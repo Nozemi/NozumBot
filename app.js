@@ -63,7 +63,7 @@ client.on('message', message => {
         var roles = guilds[0].roles.array();
 
         for(var i = 0; i < roles.length; i++) {
-        //  message.author.sendMessage("Role Name: " + roles[i].name + "\n" + "Role ID: " + roles[i].id);
+          message.author.sendMessage("Role Name: " + roles[i].name + "\n" + "Role ID: " + roles[i].id);
         }
 
         //message.reply(message.author.id);
