@@ -15,7 +15,7 @@ client.on('ready', () => {
   }
   logging.logWarnings("User Sync Interval: " + settings.userSyncInterval);
 
-  if(!database.dbhost || !database.dbuser || !database.dbpass || !database.dbname) {
+  if(!database.dbhost || !database.dbuser || !database.dbname) {
     //console.log(getDateTime() + ": No database credentials.");
     logging.logWarnings("There is no database configurations in the settings.json file.");
   } else {
@@ -69,7 +69,7 @@ client.on('message', message => {
         //message.reply(message.author.id);
         break;
       case 'update':
-        if(!database.dbhost || !database.dbuser || !database.dbpass || !database.dbname) {
+        if(!database.dbhost || !database.dbuser || !database.dbname) {
           message.reply("sorry, unable to update your account at this time.");
         } else {
           var guild = client.guilds.array()[0];
